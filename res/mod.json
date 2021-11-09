@@ -1,0 +1,12 @@
+{
+    "name": "IME_Fix",
+    "displayName": "[gold]中文输入法修复增强[]",
+    "author": "WayZer",
+    "description": "修复Win10下输入法无法显示的bug，同时增强输入法体验",
+    "version": "1.0.1",
+    "minGameVersion": "105",
+    "dependencies": [],
+    "hidden": true,
+    "main": "cf.wayzer.imeFix.MODMain"
+}
+    
