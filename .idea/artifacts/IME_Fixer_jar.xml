@@ -1,10 +1,9 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="IME_Fixer:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/IME_Fixer_jar</output-path>
+    <output-path>$USER_HOME$/AppData/Roaming/Mindustry/mods</output-path>
     <root id="archive" name="IME_Fixer.jar">
       <element id="module-output" name="IME_Fixer" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jna-5.8.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jna-platform-5.8.0.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/jni/out" />
     </root>
   </artifact>
 </component>
