@@ -8,12 +8,33 @@ LRESULT winProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam)
     {
     // case WM_INPUTLANGCHANGE:
     case WM_IME_SETCONTEXT:
-    case WM_IME_STARTCOMPOSITION:
     case WM_IME_COMPOSITION:
     case WM_IME_ENDCOMPOSITION:
+    case WM_IME_STARTCOMPOSITION:
         return DefWindowProc(hWnd, msg, wParam, lParam);
-        break;
-    default:
+
+    case WM_KEYDOWN:
+    case WM_SYSKEYDOWN:
+        UINT key = (lParam >> 16) & 0xff;
+        bool extKey = (lParam >> 17) & 1;
+        UINT vKey = MapVirtualKey(key + extKey * 0xe000, MAPVK_VSC_TO_VK);
+        // log("KEYDOWN " + std::to_string(wParam) + " " + std::to_string(key) + " " + std::to_string(vKey));
+
+        if (wParam == VK_PROCESSKEY) //in COMPOSITION
+        {
+            //block some keys, according to SDLInput where see these keys as keyTyped.
+            switch (vKey)
+            {
+            case VK_BACK:
+            case VK_TAB:
+            case VK_RETURN:
+            case VK_DELETE:
+            case VK_LEFT:
+            case VK_RIGHT:
+                log("Block Key " + std::to_string(vKey));
+                return 0;
+            }
+        }
         break;
     }
     return CallWindowProc((WNDPROC)oldP, hWnd, msg, wParam, lParam);
@@ -44,16 +65,27 @@ int setupImm()
 
 int setOpen(int open)
 {
+    static HIMC bakHIMC;
     HIMC himc = ImmGetContext(window);
-    if (himc == NULL)
+    if (!open && himc != NULL)
     {
-        log("setOpen: Fail get Context");
-        return false;
+        if (bakHIMC != NULL)
+            log("WARN: bakHIMC is not NULL when close");
+        bakHIMC = himc;
+        ImmAssociateContext(window, NULL);
+        return true;
     }
-    int bb = ImmSetOpenStatus(himc, open);
-    ImmReleaseContext(window, himc);
-    return bb;
-    // bb = bb && ImmNotifyIME(himc,open)
+    else if (open && himc == NULL)
+    {
+        if (bakHIMC == NULL)
+            log("WARN: bakHIMC is NULL when open");
+        ImmAssociateContext(window, bakHIMC);
+        ImmReleaseContext(window, bakHIMC);
+        bakHIMC = NULL;
+        return true;
+    }
+    else
+        return false;
 }
 
 int setPos(int x, int y)

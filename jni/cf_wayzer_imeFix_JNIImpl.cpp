@@ -11,7 +11,7 @@ JNIEXPORT jboolean JNICALL Java_cf_wayzer_imeFix_JNIImpl_setup(JNIEnv *jenv, jcl
 {
   _jenv = jenv;
   _jcls = jcls;
-  window = FindWindow(NULL, "Mindustry");
+  window = FindWindow(NULL, TEXT("Mindustry"));
   if (window == NULL)
   {
     log("Not found window");
