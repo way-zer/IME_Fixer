@@ -67,6 +67,7 @@ public class MODMain extends Mod {
                     boolean show = focus instanceof TextField;
                     Log.infoTag("IMEFix", "setOpen(" + show + "):" + JNIImpl.setOpen(show));
                     Log.infoTag("IMEFix", "" + vec2.x + ";" + vec2.y);
+                    JNIImpl.setPos((int) vec2.x, (int) vec2.y);
                 }
             });
         } catch (Throwable e) {
