@@ -7,14 +7,32 @@ JNIEnv *_jenv;
 jclass _jcls;
 HWND window;
 
+WINBOOL enumWindow(HWND hWnd, LPARAM current)
+{
+  DWORD processId;
+  GetWindowThreadProcessId(hWnd, &processId);
+  if (processId == current)
+  {
+    window = hWnd;
+    return false;
+  }
+  return true;
+}
+
 JNIEXPORT jboolean JNICALL Java_cf_wayzer_imeFix_JNIImpl_setup(JNIEnv *jenv, jclass jcls)
 {
   _jenv = jenv;
   _jcls = jcls;
-  window = FindWindow(NULL, TEXT("Mindustry"));
+
+  EnumWindows(enumWindow, GetCurrentProcessId());
   if (window == NULL)
   {
-    log("Not found window");
+    log("Fail to get window by EnumWindows");
+    window = FindWindow(NULL, TEXT("Mindustry"));
+  }
+  if (window == NULL)
+  {
+    log("Fail to get window by FindWindow");
     return false;
   }
   log("Begin Setup!");

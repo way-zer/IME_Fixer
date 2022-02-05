@@ -1,13 +1,10 @@
 package cf.wayzer.imeFix;
 
-import arc.util.ArcRuntimeException;
-import arc.util.Log;
-import arc.util.SharedLibraryLoader;
+import arc.util.*;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 
-public class JNIImpl {
+public class JNIImpl{
     public static native boolean setup();
 
     public static native boolean setPos(int x, int y);
@@ -16,27 +13,28 @@ public class JNIImpl {
 
     //used in native
     @SuppressWarnings("unused")
-    public static void log(String str) {
+    public static void log(String str){
         Log.infoTag("IMEFix_Native", str);
     }
 
-    static {
-        new SharedLibraryLoader() {
+    static{
+        new SharedLibraryLoader(){
             @Override
-            protected InputStream readFile(String path) {
+            protected InputStream readFile(String path){
                 InputStream input = JNIImpl.class.getResourceAsStream("/" + path);
-                if (input == null) {
+                if(input == null){
                     throw new ArcRuntimeException("Unable to read file for extraction: " + path);
-                } else {
+                }else{
                     return input;
                 }
             }
+
             @Override
-            protected Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile) {
-                try {
+            protected Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile){
+                try{
                     System.load(this.extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
                     return null;
-                } catch (Throwable var5) {
+                }catch(Throwable var5){
                     return var5;
                 }
             }

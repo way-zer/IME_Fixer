@@ -69,10 +69,13 @@ int setOpen(int open)
     HIMC himc = ImmGetContext(window);
     if (!open && himc != NULL)
     {
-        if (bakHIMC != NULL)
-            log("WARN: bakHIMC is not NULL when close");
-        bakHIMC = himc;
         ImmAssociateContext(window, NULL);
+        if (bakHIMC != NULL && himc != bakHIMC)
+        {
+            ImmDestroyContext(bakHIMC);
+            log("WARN: bakHIMC is not NULL when close");
+        }
+        bakHIMC = himc;
         return true;
     }
     else if (open && himc == NULL)
