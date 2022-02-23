@@ -23,7 +23,7 @@ public class MODMain extends Mod{
     }
 
     void lateInit(){
-        if(!OS.isWindows && !OS.is64Bit){
+        if(!OS.isWindows || !OS.is64Bit){
             Core.app.post(() -> Vars.ui.showText("IMEFix", "目前仅支持WIN64"));
             return;
         }
