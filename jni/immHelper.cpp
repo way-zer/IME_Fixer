@@ -16,13 +16,13 @@ LRESULT winProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
     case WM_SYSKEYDOWN:
         UINT key = (lParam >> 16) & 0xff;
-        bool extKey = (lParam >> 17) & 1;
-        UINT vKey = MapVirtualKey(key + extKey * 0xe000, MAPVK_VSC_TO_VK);
-        // log("KEYDOWN " + std::to_string(wParam) + " " + std::to_string(key) + " " + std::to_string(vKey));
+        bool extKey = (lParam >> 24) & 1;
+        UINT vKey = MapVirtualKey(key + extKey * KEYEVENTF_EXTENDEDKEY, MAPVK_VSC_TO_VK);
+        // log("KEYDOWN " + std::to_string(wParam) + " " + std::to_string(key) + (extKey ? 'E' : ' ') + " " + std::to_string(vKey));
 
-        if (wParam == VK_PROCESSKEY) //in COMPOSITION
+        if (wParam == VK_PROCESSKEY) // in COMPOSITION
         {
-            //block some keys, according to SDLInput where see these keys as keyTyped.
+            // block some keys, according to SDLInput where see these keys as keyTyped.
             switch (vKey)
             {
             case VK_BACK:
@@ -99,7 +99,7 @@ int setPos(int x, int y)
     option.ptCurrentPos.x = x;
     option.ptCurrentPos.y = y;
     HIMC himc = ImmGetContext(window);
-    if (himc != NULL) //When not focus, context is Null
+    if (himc != NULL) // When not focus, context is Null
     {
         int bb = ImmSetCompositionWindow(himc, &option);
         ImmReleaseContext(window, himc);
